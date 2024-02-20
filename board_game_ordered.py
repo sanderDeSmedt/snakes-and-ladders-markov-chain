@@ -7,16 +7,10 @@
 
 # ## General functions
 
-# In[1]:
-
-
 import random as rand
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
-
-
-# In[2]:
 
 
 snakes = {
@@ -93,32 +87,17 @@ trans = {
 max_value = 100
 max_value_dice = 6
 
-
-# In[3]:
-
-
 snakes.values()
-
-
-# In[4]:
-
 
 def dice_value():
     value = rand.randint(1,max_value_dice)
     return value
-
-
-# In[5]:
-
 
 def check_win(position):
     win = False
     if position >= max_value:
         win = True
     return win
-
-
-# In[6]:
 
 
 def snake_ladder(position, dice_value):
@@ -135,15 +114,8 @@ def snake_ladder(position, dice_value):
     return final_position
 
 
-# In[ ]:
 
-
-
-
-
-# ## Roll simulation
-
-# In[7]:
+# Roll simulation
 
 
 def roll_simulation():
@@ -157,23 +129,10 @@ def roll_simulation():
             break
     return trajectory
 
-
-# In[ ]:
-
-
-
-
-
-# In[8]:
-
-
 def homogenize_length(data, fill):
     max_length = max(map(len, data))
     for i in range(len(data)):
         data[i] = data[i] + [fill]*(max_length-len(data[i]))
-
-
-# In[9]:
 
 
 def count_entries(trajectories):
@@ -182,14 +141,6 @@ def count_entries(trajectories):
     minlength = trajectories.max()+1
     count = [np.bincount(trajectories[:,i], minlength=minlength) for i in range(trajectories.shape[1])]
     return np.array(count)
-
-
-
-
-
-
-
-# In[10]:
 
 
 def used_snakes(data):
@@ -202,10 +153,7 @@ def used_snakes(data):
     for i in range(len(used_snakes)):
         dic_snakes[i] = used_snakes[i]
     return dic_snakes
-
-
-# In[11]:
-
+    
 
 def used_ladders(data):
     used_ladders = np.zeros(11)
@@ -220,49 +168,15 @@ def used_ladders(data):
         dic_ladders[i] = used_ladders[i]
     return dic_ladders
 
-
-# In[12]:
-
-
 roll_sim = [roll_simulation() for i in range(100000)]
-
-
-# In[13]:
 
 
 homogenize_length(roll_sim, max_value+1)
 roll_count = count_entries(roll_sim)/len(roll_sim)
 
 
-# In[14]:
-
-
-'''used_snakes = used_snakes(roll_sim)
-dic_snakes = {}
-for i in range(len(used_snakes)):
-    dic_snakes[i] = used_snakes[i]
-dic_snakes
-'''
-
-
-# In[15]:
-
-
-'''used_ladders = used_ladders(roll_sim)
-dic_ladders = {}
-for i in range(len(used_ladders)):
-    dic_ladders[i] = used_ladders[i]
-dic_ladders
-'''
-
-
-# In[16]:
-
-
 dic_snakes = used_snakes(roll_sim)
 
-
-# In[17]:
 
 
 fig, ax = plt.subplots(nrows=1, ncols=1, dpi=150, figsize=(7, 3))
@@ -275,13 +189,8 @@ plt.xticks(np.arange(11, step=1))
 fig.savefig('used_snakes.png', bbox_inches = 'tight')
 
 
-# In[18]:
-
 
 dic_ladders = used_ladders(roll_sim)
-
-
-# In[19]:
 
 
 fig, ax = plt.subplots(nrows=1, ncols=1, dpi=150, figsize=(7, 4))
@@ -293,10 +202,7 @@ plt.bar(dic_ladders.keys(), dic_ladders.values() , color = 'g')
 fig.savefig('used_ladders.png', bbox_inches = 'tight')
 
 
-# ### Graphs
-
-# In[20]:
-
+# Graphs
 
 fig, ax = plt.subplots(nrows=1, ncols=1, dpi=150, figsize=(7, 3))
 plt.title("Cumulative probability of being on the last square")
@@ -305,43 +211,7 @@ plt.xlabel('number of steps')
 plt.ylabel('Probability')
 fig.savefig('roll_simulation_cum.png', bbox_inches = 'tight')
 
-
-# In[ ]:
-
-
-
-
-
-# ## Stochastic simulation
-
-# def transition_matrix():
-#     transition = np.zeros((max_value+1,max_value+1))
-#     for x in range(max_value + 2):
-#         for k in range(1,7):
-#             if x+k < max_value:
-#                 if x+k in snakes:
-#                     transition[x,x+k] = 0
-#                     transition[x,snakes.get(x+k)] += 1/6
-#                     #print("x:",x)
-#                     #print("x+k",x+k)
-#                     #print("value:",snakes.get(x+k))
-#                 if x+k in ladders:
-#                     transition[x,x+k]=0
-#                     transition[x,ladders.get(x+k)] += 1/6
-#                 else:
-#                     transition[x,x+k] += 1/6
-#             else:
-#                 break
-#     return transition
-
-# In[ ]:
-
-
-
-
-
-# In[21]:
-
+# Stochastic simulation
 
 def transition_matrix():
     T = np.zeros((max_value+1, max_value+1))
@@ -363,8 +233,6 @@ def transition_matrix():
     return T
 
 
-# In[22]:
-
 
 def stochastic_matrix(steps):
     x0 = np.array([1, ] + max_value*[0,])
@@ -375,9 +243,6 @@ def stochastic_matrix(steps):
         y = matrix @ y
         x.append(y)
     return np.array(x)
-
-
-# In[23]:
 
 
 def matrix_simulation():
@@ -395,8 +260,6 @@ def matrix_simulation():
         
     return trajectory
 
-
-# In[24]:
 
 
 def winning_n_moves():
@@ -417,28 +280,15 @@ def winning_n_moves():
     return [n,P]
 
 
-# ## graph
-
-# In[25]:
+# graph
 
 
 roll_mat = [matrix_simulation() for i in range(100000)]
 
 
-# In[ ]:
-
-
-
-
-
-# In[26]:
-
-
 homogenize_length(roll_mat, max_value+1)
 roll_count_mat = count_entries(roll_mat)/len(roll_mat)
 
-
-# In[27]:
 
 
 fig, ax = plt.subplots(nrows=1, ncols=1, dpi=150, figsize=(7, 3))
@@ -450,9 +300,6 @@ plt.ylabel('Probability')
 fig.savefig('mat_simulation_cum.png', bbox_inches = 'tight')
 
 
-# In[28]:
-
-
 fig, ax = plt.subplots(nrows=1, ncols=1, dpi=150, figsize=(7, 3))
 plt.title("comparison cumulative probability ")
 plt.plot(roll_count_mat[:,-1], color = 'black', label = 'matrix simulation')
@@ -462,8 +309,6 @@ ax.legend()
 plt.ylabel('Probability')
 fig.savefig('mat_and_roll_cum.png', bbox_inches = 'tight')
 
-
-# In[29]:
 
 
 n = winning_n_moves()[0]
@@ -478,13 +323,8 @@ plt.title('Chance of winning in n moves')
 fig.savefig('chance_winning_n.png', bbox_inches = 'tight')
 
 
-# In[30]:
-
-
 dic_snakes_mat = used_snakes(roll_mat)
 
-
-# In[31]:
 
 
 fig, ax = plt.subplots(nrows=1, ncols=1, dpi=150, figsize=(7, 3))
@@ -497,13 +337,7 @@ plt.xticks(np.arange(11, step=1))
 fig.savefig('used_snakes_mat.png', bbox_inches = 'tight')
 
 
-# In[32]:
-
-
 dic_ladders_mat = used_ladders(roll_mat)
-
-
-# In[33]:
 
 
 fig, ax = plt.subplots(nrows=1, ncols=1, dpi=150, figsize=(7, 3))
@@ -513,9 +347,6 @@ plt.ylabel("number of times used")
 plt.xlabel("ladders")
 plt.bar(dic_ladders_mat.keys(), dic_ladders_mat.values() , color = 'g')
 fig.savefig('used_ladders_mat.png', bbox_inches = 'tight')
-
-
-# In[36]:
 
 
 fig, ax = plt.subplots(nrows=1, ncols=1, dpi=150, figsize=(7, 4))
@@ -529,9 +360,6 @@ plt.legend()
 fig.savefig('ladders_comp.png', bbox_inches = 'tight')
 
 
-# In[35]:
-
-
 fig, ax = plt.subplots(nrows=1, ncols=1, dpi=150, figsize=(7, 4))
 plt.title("Number of times snakes were used after 100.000 simulations")
 plt.xlim(0.5,10.5)
@@ -542,9 +370,6 @@ plt.bar(dic_snakes_mat.keys(), dic_snakes_mat.values(), label = 'matrix simulati
 plt.xticks(np.arange(11, step=1))
 plt.legend()
 fig.savefig('snakes_comp.png', bbox_inches = 'tight')
-
-
-# In[ ]:
 
 
 
